@@ -2,11 +2,8 @@
 set -e
 
 # Specify your tool name and directory name
-<<<<<<< HEAD
 TOOL_NAME="cognisyn"
 TOOL_DIR_NAME="cognisyn"
-=======
->>>>>>> 4610987b7014f8f324dbf010cdf7ffc2a66855f2
 
 main() {
 	BIN_DIR=${BIN_DIR-"$HOME/.bin"} # Change the directory name if desired
