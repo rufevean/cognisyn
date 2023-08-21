@@ -2,8 +2,6 @@
 set -e
 
 # Specify your tool name and directory name
-TOOL_NAME="cognisyn"
-TOOL_DIR_NAME="cogni"
 
 main() {
 	BIN_DIR=${BIN_DIR-"$HOME/.bin"} # Change the directory name if desired
@@ -49,7 +47,7 @@ main() {
 	# Your custom architecture handling here if needed
 
 	# Construct the URL for downloading the release archive from GitHub
-	BINARY_URL="https://github.com/rufevean/cognisyn/releases/latest/download/${TOOL_NAME}-${PLATFORM}-${ARCHITECTURE}.tar.gz"
+	BINARY_URL="https://github.com/rufevean/cognisyn/releases/latest/download/cognisyn-${PLATFORM}-${ARCHITECTURE}.tar.gz"
 	echo "$BINARY_URL"
 
 	echo "downloading latest binary"
