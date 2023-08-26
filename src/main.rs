@@ -2,7 +2,10 @@ use clap::Parser;
 use reqwest::Client;
 use serde_json::json;
 use serde_json::Value;
-use std::{env, process::exit};
+use std::{
+    env,
+    process::{exit, Command},
+};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -44,17 +47,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await
         .unwrap();
 
-    // Extract and print the status code
+    // Extract and execute the command
     let response_json: Value = response.json().await?;
-
-    // Extract the text from the JSON
     if let Some(choices) = response_json
         .get("choices")
         .and_then(|choices| choices.as_array())
     {
         if let Some(choice) = choices.first() {
             if let Some(text) = choice.get("text").and_then(|text| text.as_str()) {
-                println!("{}", text);
+                execute_command(text); // Execute the generated command
             }
         }
     }
@@ -63,4 +64,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 fn build_prompt(prompt: &str) -> String {
     format!("{prompt}:\n```bash\n#!/bin/bash\n", prompt = prompt)
+}
+
+fn execute_command(command: &str) {
+    let _output = Command::new("bash")
+        .arg("-c")
+        .arg(command)
+        .output()
+        .expect("Failed to execute command.");
 }
