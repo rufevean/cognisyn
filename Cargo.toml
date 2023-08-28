@@ -12,3 +12,4 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 reqwest = { version = "0.11", features = ["blocking", "json"] }
 serde = { version = "1.0.104", features = ["derive"] }
 serde_json = "1.0.105"
+question = "0.2.2"
