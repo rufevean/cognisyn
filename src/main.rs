@@ -13,11 +13,7 @@ struct Args {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let api_key = env::var("OPENAI_API_KEY").unwrap_or_else(|_| {
-        eprintln!("API_KEY is not set");
-        exit(1)
-    });
-
+    let api_key = "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";
     let args = Args::parse();
     let prompt = args.prompt;
     let client = Client::new();
