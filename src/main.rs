@@ -64,6 +64,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
     }
+    result = result.as_str().trim().to_string();
+
+    println!("{:?}", result.clone());
     let should_run = if args.force {
         true
     } else {
@@ -93,4 +96,3 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 fn build_prompt(prompt: &str) -> String {
     format!("{prompt}:\n```bash\n#!/bin/bash\n", prompt = prompt)
 }
-
