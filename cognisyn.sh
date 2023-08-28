@@ -7,18 +7,32 @@ BIN_DIR=${BIN_DIR-"$HOME/.bin"}
 INSTALL_DIR="$BIN_DIR/$APP_NAME"
 PROFILE_FILE=""
 
-# Detect OS and set shell-specific variables
-detect_environment() {
-	if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-		PROFILE_FILE="$HOME/.zshrc" # Default to Zsh on Linux
-	elif [[ "$OSTYPE" == "darwin"* ]]; then
-		PROFILE_FILE="$HOME/.zshrc" # Default to Zsh on macOS
-	elif [[ "$OSTYPE" == "cygwin" || "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
-		PROFILE_FILE="$HOME/.bashrc" # Default to Bash on Windows
-	else
-		echo "Unsupported OS. Please manually configure your shell."
+# Temporary file to capture output
+OUTPUT_FILE=$(mktemp)
+
+# Redirect output and errors to the temporary file
+exec &> >(tee "$OUTPUT_FILE")
+
+# Detect the user's shell
+detect_shell() {
+	case "$SHELL" in
+	*/zsh)
+		PROFILE_FILE="$HOME/.zshrc"
+		;;
+	*/bash)
+		PROFILE_FILE="$HOME/.bashrc"
+		;;
+	*/fish)
+		PROFILE_FILE="$HOME/.config/fish/config.fish"
+		;;
+	*/ash)
+		PROFILE_FILE="$HOME/.profile"
+		;;
+	*)
+		echo "Could not detect shell. You need to manually add $INSTALL_DIR to your PATH."
 		exit 1
-	fi
+		;;
+	esac
 }
 
 # Add app installation directory to user's PATH
@@ -34,15 +48,10 @@ add_to_path() {
 # Install Rust if not already installed
 install_rust() {
 	if ! command -v cargo &>/dev/null; then
-		if [[ "$OSTYPE" == "cygwin" || "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
-			echo "Rust installation on Windows is not supported. Please install Rust manually."
-			exit 1
-		else
-			echo "Installing Rust..."
-			curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-			source "$HOME/.cargo/env"
-			echo "Rust installation complete."
-		fi
+		echo "Installing Rust..."
+		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+		source "$HOME/.cargo/env"
+		echo "Rust installation complete."
 	fi
 }
 
@@ -58,7 +67,7 @@ compile_app() {
 
 # Main function
 main() {
-	detect_environment
+	detect_shell
 	mkdir -p "$BIN_DIR"
 	install_rust
 	compile_app
@@ -75,3 +84,9 @@ main() {
 }
 
 main "$@"
+
+# Display captured output
+cat "$OUTPUT_FILE"
+
+# Clean up
+rm "$OUTPUT_FILE"
