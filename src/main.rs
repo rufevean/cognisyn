@@ -18,7 +18,7 @@ struct Args {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // ... (rest of the main function remains unchanged)
+
     let api_key = env::var("OPENAI_API_KEY").unwrap_or_else(|_| {
         eprintln!("API_KEY is not set");
         exit(1)
